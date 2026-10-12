@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Big-Little Pairing | Cathy Codes</title>
+    <link rel="stylesheet" href="default_styles.css" />
+    <link rel="stylesheet" href="terminal_styles.css" />
+    <link rel="icon" href="assets/codes_logos/simplified.png" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/xterm/css/xterm.css" />
+    <script src="https://cdn.jsdelivr.net/npm/xterm/lib/xterm.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/xterm-addon-fit/lib/xterm-addon-fit.js"></script>
+    <script src="https://cdn.jsdelivr.net/pyodide/v0.25.0/full/pyodide.js"></script>
+</head>
+
+<!-- Navigation Bar Component -->
+<header id="nav-bar" class="nav-bar"></header>
+<script>
+    async function loadHeader() {
+        const res = await fetch("components/nav-bar.html");
+        const html = await res.text();
+        document.getElementById("nav-bar").innerHTML = html;
+    }
+    loadHeader();
+
+    function toggleMenu(x) {
+        const nav = document.querySelector(".nav-links");
+        x.classList.toggle("change");
+        nav.classList.toggle("nav-open");
+    }
+</script>
+
+<body>
+    <div class="container">
+        <h1>Big-Little Pairing</h1>
+
+        <section id="about">
+            <p>Welcome to the Big-Little Pairing tool! Run the algorithm in your browser using Pyodide below.</p>
+            <p>Check out the code for this project on the
+                <a href="https://github.com/cathycodes-dev/Big-Little-Algo" target="_blank">GitHub Repository</a>.
+            </p>
+        </section>
+
+        <h2>Run Controls</h2>
+
+        <!-- Interactive Controls Card -->
+        <div class="controls-card">
+            <!-- Option 1: Sample CSVs -->
+            <div class="option-group">
+                <div class="option-title">Option A: Quick Demo with Celebrity Sample Data</div>
+                <button id="sample-btn" class="btn" onclick="runWithSampleCSVs()" disabled>
+                    Run with Sample Data
+                </button>
+            </div>
+
+            <hr class="divider">
+
+            <!-- Option 2: Custom Uploads -->
+            <div class="option-group">
+                <div class="option-title">Option B: Upload Custom CSV Files</div>
+
+                <div class="file-input-group">
+                    <div class="file-input-item">
+                        <label for="csv1">BigListChoices.csv:</label>
+                        <input type="file" id="csv1" accept=".csv">
+                    </div>
+
+                    <div class="file-input-item">
+                        <label for="csv2">LittleListChoices.csv:</label>
+                        <input type="file" id="csv2" accept=".csv">
+                    </div>
+                </div>
+
+                <button id="upload-btn" class="btn" onclick="runWithUploadedCSVs()" disabled>
+                    Upload & Run Custom CSVs
+                </button>
+            </div>
+        </div>
+
+        <!-- Terminal Output -->
+        <h2>Output Terminal</h2>
+        <div class="terminal-container">
+            <div id="terminal"></div>
+        </div>
+    </div>
+
+    <script>
+        // Terminal Initialization matching --icons and --background theme colors
+        const term = new Terminal({
+            cursorBlink: true,
+            theme: {
+                background: '#02123e', // var(--icons)
+                foreground: '#e6faff', // var(--background)
+                cursor: '#3263eb'     // var(--logo-font)
+            }
+        });
+        const fitAddon = new FitAddon.FitAddon();
+        term.loadAddon(fitAddon);
+        term.open(document.getElementById('terminal'));
+        fitAddon.fit();
+        window.addEventListener('resize', () => fitAddon.fit());
+
+        const pythonModules = ['data.py'];
+        const sampleFiles = ['BigListChoices.csv', 'LittleListChoices.csv'];
+        const projectBasePath = './src';
+        let pyodide;
+
+        // Helper to fetch files from server's ./src directory and write to Pyodide FS
+        async function loadPythonModules() {
+            for (const file of pythonModules) {
+                term.write(`Loading module: ${file}...\r\n`);
+                const response = await fetch(`${projectBasePath}/${file}`);
+                if (!response.ok) {
+                    throw new Error(`Failed to fetch ${file} (HTTP ${response.status})`);
+                }
+                const code = await response.text();
+                pyodide.FS.writeFile(file, code);
+            }
+        }
+
+        // Load sample CSV choices directly from the ./src folder
+        async function loadSampleCSVsFromSrc() {
+            for (const file of sampleFiles) {
+                term.write(`Fetching sample choice file: ${file}...\r\n`);
+                const response = await fetch(`${projectBasePath}/${file}`);
+                if (!response.ok) {
+                    throw new Error(`Failed to fetch ${file} from ${projectBasePath} (HTTP ${response.status})`);
+                }
+                const csvText = await response.text();
+                pyodide.FS.writeFile(file, csvText);
+            }
+        }
+
+        // Helper to upload user browser files into Pyodide virtual filesystem
+        async function uploadToPyodide(inputId, targetFilename) {
+            const input = document.getElementById(inputId);
+            if (!input || input.files.length === 0) {
+                throw new Error(`Please select a CSV file for ${targetFilename}`);
+            }
+            const text = await input.files[0].text();
+            pyodide.FS.writeFile(targetFilename, text);
+        }
+
+        // Shared Python execution handler
+        async function executePythonMatching() {
+            await pyodide.runPythonAsync(`
+            import importlib
+            import data as d
+            import main
+            importlib.reload(d)
+            importlib.reload(main)
+            await main.play_game()
+        `);
+        }
+
+        // Action 1: Fetch and Run with Sample CSVs from ./src
+        async function runWithSampleCSVs() {
+            try {
+                term.write('\r\n--- Loading Sample CSV Data from ./src Folder ---\r\n');
+                await loadSampleCSVsFromSrc();
+                term.write('Sample files loaded successfully. Running algorithm...\r\n\n');
+                await executePythonMatching();
+            } catch (err) {
+                term.write(`\r\n\x1b[31mError: ${err.message}\x1b[0m\r\n`);
+                console.error(err);
+            }
+        }
+
+        // Action 2: Run with User Uploaded CSVs
+        async function runWithUploadedCSVs() {
+            try {
+                term.write('\r\n--- Uploading & Processing Custom CSV Files ---\r\n');
+
+                await uploadToPyodide('csv1', 'BigListChoices.csv');
+                await uploadToPyodide('csv2', 'LittleListChoices.csv');
+
+                term.write('Files uploaded successfully. Running algorithm...\r\n\n');
+                await executePythonMatching();
+
+            } catch (err) {
+                term.write(`\r\n\x1b[31mError: ${err.message}\x1b[0m\r\n`);
+                console.error(err);
+            }
+        }
+
+        async function init() {
+            try {
+                term.write('Loading Pyodide WebAssembly runtime...\r\n');
+                pyodide = await loadPyodide();
+
+                pyodide.setStdout({
+                    raw: (charCode) => {
+                        const char = String.fromCharCode(charCode);
+                        term.write(char === '\n' ? '\r\n' : char);
+                    }
+                });
+
+                // Load module files (data.py)
+                await loadPythonModules();
+
+                // Fetch default sample CSVs from ./src folder on startup
+                await loadSampleCSVsFromSrc();
+
+                // Fetch and write main.py
+                term.write('Loading main game script...\r\n');
+                const mainResponse = await fetch(`${projectBasePath}/main.py`);
+                if (!mainResponse.ok) {
+                    throw new Error(`Failed to fetch main.py (HTTP ${mainResponse.status})`);
+                }
+                const mainCode = await mainResponse.text();
+                pyodide.FS.writeFile('main.py', mainCode);
+
+                // Enable buttons once Pyodide & files are ready
+                document.getElementById('sample-btn').disabled = false;
+                document.getElementById('upload-btn').disabled = false;
+
+                term.write('System Ready!\r\n');
+                term.write('Click "Run with Sample Data" or select your CSV files and click "Upload & Run Custom CSVs".\r\n\n');
+
+            } catch (err) {
+                term.write(`\r\n\x1b[31mError: ${err.message}\x1b[0m\r\n`);
+                console.error(err);
+            }
+        }
+
+        init();
+    </script>
+
+    <!-- Footer Component -->
+    <footer id="footer" class="footer"></footer>
+    <script>
+        async function loadFooter() {
+            const res = await fetch("components/footer.html");
+            const html = await res.text();
+            document.getElementById("footer").innerHTML = html;
+        }
+        loadFooter();
+    </script>
+</body>
+
+</html>

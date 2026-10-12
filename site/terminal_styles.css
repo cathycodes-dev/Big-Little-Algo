@@ -1,0 +1,173 @@
+/* ==========================================================================
+   TERMINAL & CONTROLS STYLES
+   Matches the CathyCodes Design System
+   ========================================================================== */
+
+/* ------------------ */
+/* GLOBAL TEXT COLOR  */
+/* ------------------ */
+
+body, p, label, input, button {
+    color: var(--body);
+}
+
+/* ------------------ */
+/* CONTROLS SECTION   */
+/* ------------------ */
+
+.controls-card {
+    background-color: var(--background);
+    border: 2px solid var(--header);
+    border-radius: 8px;
+    padding: 1.5rem;
+    margin-bottom: 2rem;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+}
+
+.controls-card h3 {
+    color: var(--header);
+    font-family: CathyCodes, Calibri, sans-serif;
+    font-size: 1.8rem;
+    margin-top: 0;
+    margin-bottom: 1rem;
+    border-bottom: 1px solid var(--title);
+    padding-bottom: 0.5rem;
+}
+
+.option-group {
+    margin-bottom: 1.5rem;
+}
+
+.option-group:last-child {
+    margin-bottom: 0;
+}
+
+.option-title {
+    color: var(--header);
+    font-size: 1.15rem;
+    margin-bottom: 0.75rem;
+    font-weight: 600;
+}
+
+.file-input-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    margin-bottom: 1rem;
+}
+
+.file-input-item {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
+.file-input-item label {
+    font-size: 1rem;
+    color: var(--body);
+    font-weight: 600;
+}
+
+.file-input-item input[type="file"] {
+    font-family: Calibri, sans-serif;
+    font-size: 1rem;
+    padding: 0.4rem;
+    background-color: white;
+    border: 1px solid var(--title);
+    border-radius: 4px;
+    color: var(--body);
+    cursor: pointer;
+}
+
+.file-input-item input[type="file"]::-webkit-file-upload-button {
+    background-color: var(--dark-background);
+    color: white;
+    border: none;
+    padding: 0.4rem 0.8rem;
+    border-radius: 4px;
+    cursor: pointer;
+    font-family: Calibri, sans-serif;
+    margin-right: 0.5rem;
+}
+
+.file-input-item input[type="file"]::-webkit-file-upload-button:hover {
+    background-color: var(--header);
+}
+
+.divider {
+    border: 0;
+    height: 1px;
+    background-color: var(--title);
+    margin: 1.5rem 0;
+}
+
+/* ------------------ */
+/* BUTTON OVERRIDES   */
+/* ------------------ */
+
+.btn-secondary {
+    background-color: var(--dark-background);
+}
+
+.btn-secondary:hover {
+    background-color: var(--icons);
+}
+
+.btn:hover {
+    opacity: 0.9;
+    cursor: pointer;
+}
+
+.btn:disabled {
+    background-color: var(--title);
+    color: white;
+    cursor: not-allowed;
+    opacity: 0.7;
+}
+
+/* ------------------ */
+/* TERMINAL STYLES    */
+/* ------------------ */
+
+.terminal-container {
+    background-color: var(--icons);
+    border: 3px solid var(--header);
+    border-radius: 8px;
+    padding: 1rem;
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+    overflow: hidden;
+}
+
+#terminal {
+    width: 100%;
+    min-height: 350px;
+}
+
+/* Overrides for Xterm.js scrollbar */
+.xterm-viewport::-webkit-scrollbar {
+    width: 8px;
+}
+
+.xterm-viewport::-webkit-scrollbar-track {
+    background: var(--icons);
+}
+
+.xterm-viewport::-webkit-scrollbar-thumb {
+    background: var(--dark-background);
+    border-radius: 4px;
+}
+
+/* ------------------ */
+/* RESPONSIVE LAYOUT  */
+/* ------------------ */
+
+@media (min-width: 701px) {
+    .file-input-group {
+        flex-direction: row;
+        gap: 1.5rem;
+    }
+
+    .file-input-item {
+        flex: 1;
+    }
+}

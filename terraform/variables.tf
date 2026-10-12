@@ -1,0 +1,37 @@
+variable "owner" {
+  type    = string
+  default = "Cathy-Codes"
+}
+
+variable "project_name" {
+  type    = string
+  default = "big-little"
+}
+
+variable "region" {
+  description = "the AWS region"
+  type        = string
+  default     = "us-east-1"
+}
+
+
+variable "environment" {
+  type        = string
+  description = "Deployment environment name"
+  default     = "dev"
+
+  validation {
+    condition     = contains(["dev", "staging", "prod"], var.environment)
+    error_message = "Environment must be dev, staging, or prod."
+  }
+}
+
+variable "domain" {
+  type    = string
+  default = "cathycodes.com"
+}
+
+
+locals {
+  site = "${var.project_name}.${var.domain}"
+}
