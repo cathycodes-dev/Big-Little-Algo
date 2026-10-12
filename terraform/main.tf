@@ -116,8 +116,11 @@ resource "aws_cloudfront_distribution" "website" {
   enabled             = true
   is_ipv6_enabled     = true
   default_root_object = "index.html"
-  comment             = "CloudFront distribution for static portfolio site"
+  comment             = "CloudFront distribution for static big-little site"
   aliases             = [local.site]
+
+  web_acl_id = "arn:aws:wafv2:us-east-1:765447043038:global/webacl/CreatedByCloudFront-3b982f8f/4fc66eb3-e693-4f36-b94e-0aaac89e2497"
+
 
   price_class = "PriceClass_100"
 
