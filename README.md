@@ -88,7 +88,7 @@ python main.py
 This repository uses **GitHub Actions** and **Terraform** for continuous deployment:
 
 * Pushes to the `main` branch trigger Terraform validation, plan, and apply inside the `terraform/` directory.
-* Website assets and Python game files in `./src` are synchronized to AWS S3.
+* Website assets and Python Algorithm files in `./src` are synchronized to AWS S3.
 * CloudFront cache invalidation is automatically triggered using the `${{ env.PROJECT_NAME }}.${{ env.DOMAIN }}` distribution alias.
 
 ## Support
