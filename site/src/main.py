@@ -43,7 +43,7 @@ def solve_stable_matching(info):
     # Convert mapping to pledge -> brother
     return {pledge: bro for bro, pledge in matches.items()}
 
-async def play_game():
+async def run_algo():
     info = d.data()
     matches = solve_stable_matching(info)
 
@@ -55,4 +55,4 @@ async def play_game():
 
 
 if '__main__' == __name__:
-    asyncio.run(play_game())
+    asyncio.run(run_algo())

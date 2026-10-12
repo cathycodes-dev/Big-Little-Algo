@@ -150,7 +150,7 @@
             import main
             importlib.reload(d)
             importlib.reload(main)
-            await main.play_game()
+            await main.run_algo()
         `);
         }
 
@@ -203,7 +203,7 @@
                 await loadSampleCSVsFromSrc();
 
                 // Fetch and write main.py
-                term.write('Loading main game script...\r\n');
+                term.write('Loading main algorithm script...\r\n');
                 const mainResponse = await fetch(`${projectBasePath}/main.py`);
                 if (!mainResponse.ok) {
                     throw new Error(`Failed to fetch main.py (HTTP ${mainResponse.status})`);

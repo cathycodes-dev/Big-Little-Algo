@@ -14,7 +14,7 @@ permissions:
   contents: read
 
 jobs:
-  deploy-game:
+  deploy-algo:
     runs-on: ubuntu-latest
     
     # Set workspace globally
@@ -29,7 +29,7 @@ jobs:
       AWS_ACCOUNT_ID: ${{ secrets.AWS_ACCOUNT_ID }}
 
     steps:
-      - name: Checkout Game Code
+      - name: Checkout Algorithm Code
         uses: actions/checkout@v4
 
       - name: Configure AWS Credentials
@@ -75,7 +75,7 @@ jobs:
         env:
           TF_VAR_assume_role: "GitHubAction-AssumeRoleWithAction"
 
-      - name: Sync Game to S3
+      - name: Sync Algorithm Files to S3
         run: aws s3 sync ${{ env.PROJECT_NAME }}/ s3://${{ env.PROJECT_NAME }}-repo/${{ env.PROJECT_NAME }}/ --delete
         working-directory: .
 
