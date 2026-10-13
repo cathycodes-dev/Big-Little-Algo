@@ -121,9 +121,6 @@ resource "aws_cloudfront_distribution" "website" {
 
   web_acl_id = "arn:aws:wafv2:us-east-1:765447043038:global/webacl/CreatedByCloudFront-3b982f8f/4fc66eb3-e693-4f36-b94e-0aaac89e2497"
 
-
-  price_class = "PriceClass_100"
-
   origin {
     domain_name              = aws_s3_bucket.website.bucket_regional_domain_name
     origin_id                = "S3-${aws_s3_bucket.website.id}"
