@@ -6,11 +6,12 @@ BigListChoices.csv AND LittleListChoices.csv
 """
 import csv
 
-class data():
+
+class data:
     def __init__(self):
         # 1. Parse BigListChoices.csv
         self.pledgeprefers = {}
-        with open('BigListChoices.csv', 'r', encoding='utf-8') as pledgeLists:
+        with open("BigListChoices.csv", "r", encoding="utf-8") as pledgeLists:
             pledgeListR = csv.reader(pledgeLists)
             for row in pledgeListR:
                 if not row or not any(row):
@@ -18,29 +19,34 @@ class data():
                 prefs = []
                 for name in row[1:]:
                     name = name.strip()
-                    if name and name.lower() != 'none':
+                    if name and name.lower() != "none":
                         prefs.append(name)
                 if prefs:
                     self.pledgeprefers[row[0].strip()] = prefs
-
         # 2. Parse LittleListChoices.csv
         self.brosprefers = {}
-        with open('LittleListChoices.csv', 'r', encoding='utf-8') as littleLists:
+        with open("LittleListChoices.csv", "r", encoding="utf-8") as littleLists:
             broListR = csv.reader(littleLists)
             for row in broListR:
                 if not row or not any(row):
                     continue
                 prefs = []
                 # Check if brother opted in ('Yes')
-                if len(row) > 1 and row[1].strip().lower() == 'yes':
+                if len(row) > 1 and row[1].strip().lower() == "yes":
                     for name in row[2:]:
                         name = name.strip()
-                        if name and name.lower() != 'none':
+                        if name and name.lower() != "none":
                             prefs.append(name)
                 self.brosprefers[row[0].strip()] = prefs
 
         self.pledges = sorted(self.pledgeprefers.keys())
         self.bros = sorted(self.brosprefers.keys())
+
+        print(f"Loaded {len(self.pledgeprefers)} pledges from BigListChoices.csv")
+        print(f"Pledges: {list(self.pledgeprefers.keys())}")
+
+        print(f"Loaded {len(self.brosprefers)} brothers from LittleListChoices.csv")
+        print(f"Brothers: {list(self.brosprefers.keys())}")
 
     def getPledges(self):
         return self.pledges

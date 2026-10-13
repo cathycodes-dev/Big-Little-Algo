@@ -1,6 +1,7 @@
 import asyncio
 import data as d
 
+
 def solve_stable_matching(info):
     """
     Standard Gale-Shapley (Deferred Acceptance) algorithm.
@@ -43,16 +44,20 @@ def solve_stable_matching(info):
     # Convert mapping to pledge -> brother
     return {pledge: bro for bro, pledge in matches.items()}
 
+
 async def run_algo():
     info = d.data()
     matches = solve_stable_matching(info)
 
     if matches:
+        print("Matches found:")
         for pledge, bro in matches.items():
             print(f"-{pledge} matched with {bro}")
     else:
-        print("Error: Could not find matches based on the provided preference lists. Contact Cathy Lefebvre.")
+        print(
+            "Error: Could not find matches based on the provided preference lists. Contact Cathy Lefebvre."
+        )
 
 
-if '__main__' == __name__:
+if "__main__" == __name__:
     asyncio.run(run_algo())
