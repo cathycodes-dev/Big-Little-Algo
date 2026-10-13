@@ -16,11 +16,12 @@ body, p, label, input, button {
 /* ------------------ */
 
 .controls-card {
+    width: clamp(300px, 75vw, 700px);
+    margin: 2rem auto;
     background-color: var(--background);
     border: 2px solid var(--header);
     border-radius: 8px;
     padding: 1.5rem;
-    margin-bottom: 2rem;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
 }
 
@@ -130,6 +131,8 @@ body, p, label, input, button {
 /* ------------------ */
 
 .terminal-container {
+    width: clamp(300px, 75vw, 700px);
+    margin: 2rem auto;
     background-color: var(--icons);
     border: 3px solid var(--header);
     border-radius: 8px;
